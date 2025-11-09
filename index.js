@@ -42,15 +42,13 @@ async function run() {
     })
 
 
-    // fetching one data from mongodb and for Details page of every single card data
+    // fetching one data from mongodb and for Details page of every single card data.
     // findOne
     app.get('/habits/:id', async(req, res) => {
 
       const {id} =  req.params;
       // console.log(id)
-
       const result = await habitCollection.findOne({_id: new ObjectId(id)});
-
       res.send({
       success: true,
       result
