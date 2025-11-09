@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = 3000
 app.use(cors())
@@ -24,10 +24,12 @@ async function run() {
   try {
     await client.connect();
 
-
-
     const db = client.db('habit-db')
     const habitCollection = db.collection('habits')
+
+
+
+
 
     // data fetching from mongodb and http://localhost:3000/ server created
     // find
@@ -39,11 +41,63 @@ async function run() {
       res.send(result);
     })
 
+
+    // fetching one data from mongodb and for Details page of every single card data
+    // findOne
+    app.get('/habits/:id', async(req, res) => {
+
+      const {id} =  req.params;
+      // console.log(id)
+
+      const result = await habitCollection.findOne({_id: new ObjectId(id)});
+
+      res.send({
+      success: true,
+      result
+      })
+    })
+
     
 
 
+     // post method //for ADD_Habit page
+    //  insertOne
+   //  insertMany
+   
+   app.post('/habits', async (req, res) => {
+     const data = req.body
+        // console.log(data)
+        const result = await habitCollection.insertOne(data)
+        res.send({
+            success: true,
+            result
+        })
+   })
 
-    // Send a ping to confirm a successful connection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
