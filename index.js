@@ -102,9 +102,20 @@ async function run() {
 
 
 
+    // delete //for card delet by clicking the delet button of card
+   // deleteOne
+   // deleteMany
+   app.delete('/habits/:id', async(req, res) => {
+      const {id} = req.params
+        //    const objectId = new ObjectId(id)
+        // const filter = {_id: objectId}
+      const result = await habitCollection.deleteOne({_id: new ObjectId(id)})
 
-
-
+      res.send({
+        success: true,
+        result
+      })
+   })
 
 
 
