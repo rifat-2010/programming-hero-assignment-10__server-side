@@ -120,6 +120,15 @@ async function run() {
 
 
 
+  // latest 6 data 
+  // get
+  // find
+  app.get('/latest-habits', async (req, res) => {
+  const result = await habitCollection.find().sort({createdAt: 'desc'}).limit(6).toArray()
+
+    console.log(result)
+    res.send(result)
+  })
 
 
 
@@ -145,7 +154,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-  res.send('Hello World')
+  res.send('Hello World From Rifatuzzaman Rifat!')
 })
 
 app.listen(port, () => {
