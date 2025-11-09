@@ -26,8 +26,18 @@ async function run() {
 
 
 
+    const db = client.db('habit-db')
+    const habitCollection = db.collection('habits')
 
+    // data fetching from mongodb and http://localhost:3000/ server created
+    // find
+    // findOne
+    app.get('/habits', async(req, res) => {
 
+      const result = await habitCollection.find().toArray();
+      // console.log(result)
+      res.send(result);
+    })
 
     
 
