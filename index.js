@@ -132,9 +132,61 @@ async function run() {
 
 
 
+  // for my-habits page
+  app.get("/my-habits", async(req, res) => {
+      const email = req.query.email
+      const result = await habitCollection.find({userEmail: email}).toArray()
+      res.send(result)
+    })
 
 
 
+
+    
+app.patch("/habits/:id/complete", async (req, res) => {
+  const id = req.params.id;
+  const today = new Date().toISOString().split("T")[0];
+
+  const habit = await habitCollection.findOne({ _id: new ObjectId(id) });
+
+  if (!habit) {
+    return res.status(404).send({ message: "Habit not found" });
+  }
+
+  const history = habit.completionHistory || [];
+  const alreadyCompleted = history.includes(today);
+
+  if (alreadyCompleted) {
+    return res.send({ message: "Already completed today" });
+  }
+
+  const updatedHistory = [...history, today];
+
+  let streak = 1;
+  for (let i = updatedHistory.length - 2; i >= 0; i--) {
+    const prev = new Date(updatedHistory[i]);
+    const next = new Date(updatedHistory[i + 1]);
+    const diff = Math.round((next - prev) / (1000 * 60 * 60 * 24));
+    if (diff === 1) streak++;
+    else break;
+  }
+
+  await habitCollection.updateOne(
+    { _id: new ObjectId(id) },
+    {
+      $set: {
+        completionHistory: updatedHistory,
+        currentStreak: streak
+      }
+    }
+  );
+
+  res.send({
+    message: "Habit completed",
+    currentStreak: streak,
+    completionHistory: updatedHistory
+  });
+});
 
 
 
