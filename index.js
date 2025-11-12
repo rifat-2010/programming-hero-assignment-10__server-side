@@ -142,7 +142,7 @@ async function run() {
 
 
 
-    
+  //for Mark Complete button in Details_and_MyHabit page 
 app.patch("/habits/:id/complete", async (req, res) => {
   const id = req.params.id;
   const today = new Date().toISOString().split("T")[0];
@@ -190,8 +190,21 @@ app.patch("/habits/:id/complete", async (req, res) => {
 
 
 
+// for search bar in Public_Habits page
+app.get("/search", async (req, res) => {
+  const search = req.query.search || "";
 
-   
+  const filter = {
+    title: { $regex: search, $options: "i" }
+  };
+
+  const result = await habitCollection.find(filter).toArray();
+  res.send(result);
+});
+
+
+  
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
